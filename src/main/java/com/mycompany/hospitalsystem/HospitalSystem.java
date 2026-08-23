@@ -17,7 +17,7 @@ public class HospitalSystem {
     public Ward ward = new Ward();
 
     // Register patient
-    public void registerPatient(Patient p) {
+    public void registerPatient(Patient p) { 
         for (Patient pt : patients) {
             if (pt.getId().equals(p.getId())) {
                 System.out.println("Duplicate ID not allowed.");
