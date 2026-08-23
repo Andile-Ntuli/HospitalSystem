@@ -12,7 +12,7 @@ import java.util.Scanner;
  *
  * @author junio
  */
-public class HospitalSystem {
+public class HospitalSystem { 
     private List<Patient> patients = new ArrayList<>();
     public Ward ward = new Ward();
 
