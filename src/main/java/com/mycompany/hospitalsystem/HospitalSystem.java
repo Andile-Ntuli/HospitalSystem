@@ -41,7 +41,7 @@ public class HospitalSystem {
     }
 
     // Update patient
-    public void updatePatient(String id, String newCondition) {
+    public void updatePatient(String id, String newCondition) { 
         for (Patient p : patients) {
             if (p.getId().equals(id)) {
                 p.setCondition(newCondition);
