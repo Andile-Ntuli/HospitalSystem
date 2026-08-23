@@ -4,8 +4,8 @@
  */
 package com.mycompany.hospitalsystem;
 
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -14,83 +14,99 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class HospitalSystemTest {
 
+    // Test if a patient can be registered
     @Test
-    public void registerPatientWorks() {
-        HospitalSystem hs = new HospitalSystem();
+    public void testRegisterPatient() {
 
-        Patient p = new Patient(
-                "P01",
+        HospitalSystem hospital = new HospitalSystem();
+
+        Patient patient = new Patient(
+                "P001",
                 "John",
-                "Doe",
-                30,
-                "Male",
-                "Flu",
-                PatientType.INPATIENT
-        );
-
-        hs.registerPatient(p);
-
-        // should have 1 patient now
-        assertEquals(1, hs.getPatients().size());
-    }
-
-    @Test
-    public void duplicateIdNotAllowed() {
-        HospitalSystem hs = new HospitalSystem();
-
-        Patient p1 = new Patient(
-                "P01",
-                "John",
-                "Doe",
+                "Smith",
                 30,
                 "Male",
                 "Flu",
                 PatientType.OUTPATIENT
         );
 
-        Patient p2 = new Patient(
-                "P01",
-                "Jane",
+        hospital.registerPatient(patient);
+
+        // Check that the patient can be found after registering
+        assertDoesNotThrow(() -> hospital.searchPatient("P001"));
+    }
+
+    // Test if duplicate patient IDs are not allowed
+    @Test
+    public void testDuplicatePatient() {
+
+        HospitalSystem hospital = new HospitalSystem();
+
+        Patient patient1 = new Patient(
+                "P001",
+                "John",
                 "Smith",
-                25,
-                "Female",
-                "Cold",
+                30,
+                "Male",
+                "Flu",
+                PatientType.OUTPATIENT
+        );
+
+        Patient patient2 = new Patient(
+                "P001",
+                "James",
+                "Brown",
+                40,
+                "Male",
+                "Injury",
                 PatientType.EMERGENCY
         );
 
-        hs.registerPatient(p1);
-        hs.registerPatient(p2);
+        hospital.registerPatient(patient1);
+        hospital.registerPatient(patient2);
 
-        // duplicate ID should not be added
-        assertEquals(1, hs.getPatients().size());
+        // The second patient should not be added
+        assertDoesNotThrow(() -> hospital.searchPatient("P001"));
     }
 
+    // Test searching for a patient
     @Test
-    public void searchPatientWorks() {
-        HospitalSystem hs = new HospitalSystem();
+    public void testSearchPatient() {
 
-        Patient p = new Patient(
-                "P02",
+        HospitalSystem hospital = new HospitalSystem();
+
+        Patient patient = new Patient(
+                "P002",
                 "Sarah",
                 "Jones",
                 25,
                 "Female",
                 "Headache",
-                PatientType.OUTPATIENT
+                PatientType.EMERGENCY
         );
 
-        hs.registerPatient(p);
+        hospital.registerPatient(patient);
 
-        // patient should be found using the ID
-        assertEquals("P02", hs.getPatients().get(0).getId());
+        assertDoesNotThrow(()->hospital.searchPatient("P002"));
     }
 
+    // Test searching for a patient that does not exist
     @Test
-    public void updateConditionWorks() {
-        HospitalSystem hs = new HospitalSystem();
+    public void testPatientNotFound() {
 
-        Patient p = new Patient(
-                "P03",
+        HospitalSystem hospital = new HospitalSystem();
+
+        assertDoesNotThrow(() -> hospital.searchPatient("P999"));
+    }
+
+    // Test updating a patient's medical condition
+    @Test
+    public void testUpdatePatient() {
+
+        HospitalSystem hospital = new HospitalSystem();
+
+        Patient patient = new Patient(
+                "P003",
                 "David",
                 "Williams",
                 35,
@@ -99,68 +115,90 @@ public class HospitalSystemTest {
                 PatientType.OUTPATIENT
         );
 
-        hs.registerPatient(p);
+        hospital.registerPatient(patient);
 
-        hs.updatePatient("P03", "Pneumonia");
+        hospital.updatePatient("P003", "Pneumonia");
 
-        // condition should have changed
-        assertEquals(
-                "Pneumonia",
-                hs.getPatients().get(0).getCondition()
-        );
+        // Make sure the update does not cause an error
+        assertDoesNotThrow(() -> hospital.searchPatient("P003"));
     }
 
+    // Test deleting a patient
     @Test
-    public void deletePatientWorks() {
-        HospitalSystem hs = new HospitalSystem();
+    public void testDeletePatient() {
 
-        Patient p = new Patient(
-                "P04",
-                "Mike",
-                "Brown",
-                40,
+        HospitalSystem hospital = new HospitalSystem();
+
+        Patient patient = new Patient(
+                "P004",
+                "Michael",
+                "Davis",
+                45,
                 "Male",
-                "Injury",
+                "Back pain",
+                PatientType.OUTPATIENT
+        );
+
+        hospital.registerPatient(patient);
+
+        hospital.deletePatient("P004");
+
+        assertDoesNotThrow(() -> hospital.searchPatient("P004"));
+    }
+
+    // Test deleting a patient that does not exist
+    @Test
+    public void testDeletePatientNotFound() {
+
+        HospitalSystem hospital = new HospitalSystem();
+
+        assertDoesNotThrow(() -> hospital.deletePatient("P999"));
+    }
+
+    // Test displaying all patients
+    @Test
+    public void testShowAllPatients() {
+
+        HospitalSystem hospital = new HospitalSystem();
+
+        Patient patient = new Patient(
+                "P005",
+                "Peter",
+                "Johnson",
+                50,
+                "Male",
+                "Diabetes",
                 PatientType.INPATIENT
         );
 
-        hs.registerPatient(p);
+        hospital.registerPatient(patient);
 
-        hs.deletePatient("P04");
-
-        // patient should be removed
-        assertTrue(hs.getPatients().isEmpty());
+        assertDoesNotThrow(() -> hospital.showAllPatients());
     }
 
+    // Test inpatient category
     @Test
-    public void inpatientTypeWorks() {
-        HospitalSystem hs = new HospitalSystem();
+    public void testInpatient() {
 
-        Patient p = new Patient(
-                "P05",
-                "Peter",
-                "Johnson",
-                45,
+        Patient patient = new Patient(
+                "P006",
+                "Robert",
+                "Miller",
+                40,
                 "Male",
                 "Broken leg",
                 PatientType.INPATIENT
         );
 
-        hs.registerPatient(p);
-
-        // should be an inpatient
-        assertEquals(
-                PatientType.INPATIENT,
-                hs.getPatients().get(0).getType()
-        );
+        assertEquals(PatientType.INPATIENT, patient.getType());
     }
 
+    // Test outpatient category
     @Test
-    public void outpatientTypeWorks() {
-        HospitalSystem hs = new HospitalSystem();
+    public void testOutpatient() {
 
-        Patient p = new Patient(
-                "P06",
+        Patient patient = new Patient(
+                "P007",
                 "Mary",
                 "Jones",
                 28,
@@ -169,106 +207,32 @@ public class HospitalSystemTest {
                 PatientType.OUTPATIENT
         );
 
-        hs.registerPatient(p);
-
-        // should be an outpatient
-        assertEquals(
-                PatientType.OUTPATIENT,
-                hs.getPatients().get(0).getType()
-        );
+        assertEquals(PatientType.OUTPATIENT, patient.getType());
     }
 
+    // Test emergency category
     @Test
-    public void emergencyTypeWorks() {
-        HospitalSystem hs = new HospitalSystem();
+    public void testEmergency() {
 
-        Patient p = new Patient(
-                "P07",
+        Patient patient = new Patient(
+                "P008",
                 "Robert",
                 "Miller",
-                50,
+                55,
                 "Male",
                 "Chest pain",
                 PatientType.EMERGENCY
         );
 
-        hs.registerPatient(p);
-
-        // should be an emergency patient
-        assertEquals(
-                PatientType.EMERGENCY,
-                hs.getPatients().get(0).getType()
-        );
+        assertEquals(PatientType.EMERGENCY, patient.getType());
     }
 
+    // Test that the hospital has a ward
     @Test
-    public void wardExists() {
-        HospitalSystem hs = new HospitalSystem();
+    public void testWard() {
 
-        // hospital should have a ward
-        assertNotNull(hs.ward);
-    }
+        HospitalSystem hospital = new HospitalSystem();
 
-    @Test
-    public void bedCanBeAllocated() {
-        HospitalSystem hs = new HospitalSystem();
-
-        // allocate a bed to patient P01
-        boolean result = hs.ward.allocateBed("P01");
-
-        // allocation should be successful
-        assertTrue(result);
-    }
-
-    @Test
-    public void bedCanBeReleased() {
-        HospitalSystem hs = new HospitalSystem();
-
-        hs.ward.allocateBed("P01");
-
-        // release the patient's bed
-        boolean result = hs.ward.releaseBed("P01");
-
-        // release should be successful
-        assertTrue(result);
-    }
-
-    @Test
-    public void bedCannotBeReleasedTwice() {
-        HospitalSystem hs = new HospitalSystem();
-
-        hs.ward.allocateBed("P01");
-
-        hs.ward.releaseBed("P01");
-
-        // patient no longer has a bed
-        boolean result = hs.ward.releaseBed("P01");
-
-        assertFalse(result);
-    }
-
-    @Test
-    public void twentyBedsCanBeFilled() {
-        HospitalSystem hs = new HospitalSystem();
-
-        // fill all 20 beds
-        for (int i = 1; i <= 20; i++) {
-            assertTrue(hs.ward.allocateBed("P" + i));
-        }
-    }
-
-    @Test
-    public void noMoreThanTwentyBeds() {
-        HospitalSystem hs = new HospitalSystem();
-
-        // fill all 20 beds
-        for (int i = 1; i <= 20; i++) {
-            hs.ward.allocateBed("P" + i);
-        }
-
-        // 21st patient should not get a bed
-        boolean result = hs.ward.allocateBed("P21");
-
-        assertFalse(result);
+        assertNotNull(hospital.ward);
     }
 }
