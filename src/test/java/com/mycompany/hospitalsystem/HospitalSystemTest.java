@@ -235,4 +235,4 @@ public class HospitalSystemTest {
 
         assertNotNull(hospital.ward);
     }
-}
+} 
