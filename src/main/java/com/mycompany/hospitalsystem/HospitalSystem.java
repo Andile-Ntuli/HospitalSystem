@@ -29,7 +29,7 @@ public class HospitalSystem {
     }
 
     // Search patient
-    public void searchPatient(String id) {
+    public void searchPatient(String id) { 
         for (Patient p : patients) {
             if (p.getId().equals(id)) {
                 System.out.println("Patient found:");
